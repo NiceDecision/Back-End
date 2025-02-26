@@ -9,15 +9,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class Userinfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false)
-    private String name;
+    private int birthYear;
+    private int birthMonth;
+    private int birthDate;
+    private int birthTime;
+    private boolean isLunar;
+    private String gender;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Userinfo userinfo;
+    @OneToOne
+    @JoinColumn(name = "userId")
+    private User user;
 }
