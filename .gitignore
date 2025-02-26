@@ -36,8 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-# Spring Boot application.properties 파일 무시
-application.properties
-
 # 환경 설정 파일 (.env) 무시
 .env
