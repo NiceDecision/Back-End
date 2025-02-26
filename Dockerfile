@@ -18,4 +18,4 @@ ENV JAVA_HOME=/jre
 ENV PATH="$JAVA_HOME/bin:$PATH"
 COPY --from=builder /jre $JAVA_HOME
 COPY --from=builder /usr/src/app/build/libs/*.jar /app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS1} ${JAVA_OPTS2} ${JAVA_OPTS3} -jar /app.jar"]
