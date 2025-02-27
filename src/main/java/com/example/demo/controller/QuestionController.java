@@ -18,12 +18,11 @@ public class QuestionController {
     }
 
     @PostMapping
-    public ResponseEntity<String> askQuestion(@RequestBody QuestionRequestDto questionRequestDto,
-                                              @CookieValue(value = "userId", required = false) Long userId) {
-        if (userId == null) {
+    public ResponseEntity<String> askQuestion(@RequestBody QuestionRequestDto questionRequestDto) {
+        if (questionRequestDto.getUserId() == null) {
             return ResponseEntity.status(401).body("User ID not found in cookie.");
         }
-        String response = aiService.sendQuestionToAI(userId, questionRequestDto.getQuestion(), questionRequestDto.getGptMbti());
+        String response = aiService.sendQuestionToAI(questionRequestDto.getUserId(), questionRequestDto.getQuestion(), questionRequestDto.getGptMbti());
         return ResponseEntity.ok(response);
     }
 
