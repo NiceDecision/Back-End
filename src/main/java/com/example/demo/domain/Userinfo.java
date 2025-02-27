@@ -26,7 +26,7 @@ public class Userinfo {
     private int birthDate;
 
     @Column(name = "birth_time")
-    private int birthTime;
+    private String birthTime;
 
     @Column(name = "is_lunar")
     private boolean isLunar;
