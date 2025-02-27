@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.History;
 import com.example.demo.domain.User;
 import com.example.demo.domain.Userinfo;
 import com.example.demo.dto.AIRequestDto;
 import com.example.demo.dto.GptMbtiDto;
 import com.example.demo.dto.UserInfoDto;
+import com.example.demo.repository.HistoryRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserInfoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,11 +24,12 @@ public class AIService {
     private final UserRepository userRepository;
     private final UserInfoRepository userInfoRepository;
     private final RestTemplate restTemplate;
-
+    private final HistoryRepository historyRepository;
     @Autowired
-    public AIService(UserRepository userRepository, UserInfoRepository userInfoRepository) {
+    public AIService(UserRepository userRepository, UserInfoRepository userInfoRepository, HistoryRepository historyRepository) {
         this.userRepository = userRepository;
         this.userInfoRepository = userInfoRepository;
+        this.historyRepository = historyRepository;
         this.restTemplate = new RestTemplate();
     }
 
@@ -54,13 +57,11 @@ public class AIService {
                 userinfo.isLunar(),
                 userinfo.getGender()
         );
-        System.out.println(gptMbti);
         AIRequestDto aiRequest = new AIRequestDto(
                 question,
                 new GptMbtiDto(gptMbti),
                 userInfo
         );
-        System.out.println(aiRequest.getGptMbti());
         String aiUrl = "http://34.64.192.124:8000/ai/fortune";
 
         try {
@@ -68,13 +69,21 @@ public class AIService {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<AIRequestDto> request = new HttpEntity<>(aiRequest, headers);
-            // ✅ 전송할 JSON 데이터를 출력하여 확인
+
             System.out.println("Request to AI Server: " + new ObjectMapper().writeValueAsString(aiRequest));
 
             ResponseEntity<String> response = restTemplate.postForEntity(aiUrl, request, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                return response.getBody();
+                String responseBody = response.getBody();
+                System.out.println("000");
+                String key = "\"response\":\"";
+                int startIndex = responseBody.indexOf(key) + key.length();
+                int endIndex = responseBody.indexOf("\"", startIndex);
+                String responseValue = responseBody.substring(startIndex, endIndex);
+                historyRepository.save(new History(responseValue,userId));
+                System.out.println("111");
+                return responseValue;
             } else {
                 throw new RuntimeException("Failed to get response from AI server.");
             }
