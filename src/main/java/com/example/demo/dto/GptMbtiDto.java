@@ -8,13 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class AIRequestDto {
-
-    private String question;
-
-    @JsonProperty("gpt_mbti")
-    private GptMbtiDto gptMbti;
-
-    @JsonProperty("user_info")
-    private UserInfoDto userInfo;
+public class GptMbtiDto {
+    @JsonProperty("MBTI")
+    private String mbti;
 }
