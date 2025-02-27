@@ -10,6 +10,8 @@ import com.example.demo.repository.HistoryRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserInfoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,10 @@ public class AIService {
     private final UserInfoRepository userInfoRepository;
     private final RestTemplate restTemplate;
     private final HistoryRepository historyRepository;
+
     @Autowired
-    public AIService(UserRepository userRepository, UserInfoRepository userInfoRepository, HistoryRepository historyRepository) {
+    public AIService(UserRepository userRepository, UserInfoRepository userInfoRepository,
+        HistoryRepository historyRepository) {
         this.userRepository = userRepository;
         this.userInfoRepository = userInfoRepository;
         this.historyRepository = historyRepository;
@@ -46,21 +50,21 @@ public class AIService {
         Userinfo userinfo = optionalUserInfo.get();
 
         String birthDate = String.format("%04d-%02d-%02d",
-                userinfo.getBirthYear(),
-                userinfo.getBirthMonth(),
-                userinfo.getBirthDate());
+            userinfo.getBirthYear(),
+            userinfo.getBirthMonth(),
+            userinfo.getBirthDate());
 
         UserInfoDto userInfo = new UserInfoDto(
-                user.getName(),
-                birthDate,
-                userinfo.getBirthTime(),
-                userinfo.isLunar(),
-                userinfo.getGender()
+            user.getName(),
+            birthDate,
+            userinfo.getBirthTime(),
+            userinfo.isLunar(),
+            userinfo.getGender()
         );
         AIRequestDto aiRequest = new AIRequestDto(
-                question,
-                new GptMbtiDto(gptMbti),
-                userInfo
+            question,
+            new GptMbtiDto(gptMbti),
+            userInfo
         );
         String aiUrl = "http://34.64.192.124:8000/ai/fortune";
 
@@ -70,9 +74,11 @@ public class AIService {
 
             HttpEntity<AIRequestDto> request = new HttpEntity<>(aiRequest, headers);
 
-            System.out.println("Request to AI Server: " + new ObjectMapper().writeValueAsString(aiRequest));
+            System.out.println(
+                "Request to AI Server: " + new ObjectMapper().writeValueAsString(aiRequest));
 
-            ResponseEntity<String> response = restTemplate.postForEntity(aiUrl, request, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(aiUrl, request,
+                String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 String responseBody = response.getBody();
@@ -81,7 +87,7 @@ public class AIService {
                 int startIndex = responseBody.indexOf(key) + key.length();
                 int endIndex = responseBody.indexOf("\"", startIndex);
                 String responseValue = responseBody.substring(startIndex, endIndex);
-                historyRepository.save(new History(responseValue,userId));
+                historyRepository.save(new History(responseValue, userId));
                 System.out.println("111");
                 return responseValue;
             } else {
@@ -89,7 +95,12 @@ public class AIService {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Error occurred while connecting to AI server: " + e.getMessage());
+            throw new RuntimeException(
+                "Error occurred while connecting to AI server: " + e.getMessage());
         }
+    }
+
+    public List<String> getChat(Long userId) {
+        return historyRepository.findByUserId(userId).stream().map(History::getHistory).toList();
     }
 }
