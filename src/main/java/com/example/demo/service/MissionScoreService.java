@@ -32,7 +32,7 @@ public class MissionScoreService {
         int missionPnt = missionDto.getMissionPnt();
 
         // Mission 테이블에 데이터를 저장
-        Mission mission = new Mission(userId, missionCnt, missionPnt);
+        Mission mission = new Mission(userId, name, missionCnt, missionPnt);
         missionRepository.save(mission);
 
         // totalPnt 계산 후 Ranking 테이블에 저장
