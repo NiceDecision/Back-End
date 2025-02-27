@@ -10,7 +10,7 @@ public class UserRequestDto {
     private int birthYear;
     private int birthMonth;
     private int birthDate;
-    private int birthTime;
+    private String birthTime;
     private boolean isLunar;
     private String gender;
 }
