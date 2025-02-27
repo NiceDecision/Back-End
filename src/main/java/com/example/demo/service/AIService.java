@@ -82,13 +82,12 @@ public class AIService {
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 String responseBody = response.getBody();
-                System.out.println("000");
+                System.out.println(responseBody);
                 String key = "\"response\":\"";
                 int startIndex = responseBody.indexOf(key) + key.length();
-                int endIndex = responseBody.indexOf("\"", startIndex);
-                String responseValue = responseBody.substring(startIndex, endIndex);
+                String responseValue = responseBody.substring(startIndex);
+                historyRepository.save(new History(question, userId));
                 historyRepository.save(new History(responseValue, userId));
-                System.out.println("111");
                 return responseValue;
             } else {
                 throw new RuntimeException("Failed to get response from AI server.");

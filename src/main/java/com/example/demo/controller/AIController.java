@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.AIService;
-import com.example.demo.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
