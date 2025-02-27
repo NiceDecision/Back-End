@@ -2,8 +2,10 @@ package com.example.demo.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "ranking")
 public class Ranking {
@@ -24,5 +26,4 @@ public class Ranking {
         this.totalPnt = totalPnt;
         this.name = name;
     }
-
 }

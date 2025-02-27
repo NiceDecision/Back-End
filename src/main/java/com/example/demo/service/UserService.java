@@ -2,11 +2,13 @@ package com.example.demo.service;
 
 import com.example.demo.domain.User;
 import com.example.demo.domain.Userinfo;
-import com.example.demo.dto.UserRequestDto;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+// UserService.java
+import com.example.demo.dto.UserRequestDto;
+
 
 @Service
 public class UserService {

@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Ranking;
+import com.example.demo.domain.User;
+import com.example.demo.dto.MissionDto;
 import com.example.demo.service.MissionScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +24,8 @@ public class MissionScoreController {
 
     // 점수 저장 API
     @PostMapping
-    public ResponseEntity<Ranking> saveScore(@RequestParam Long userId,
-                                             @RequestParam String name,
-                                             @RequestParam int missionCnt,
-                                             @RequestParam int missionPnt) {
-        Ranking ranking = missionScoreService.saveScore(userId, name, missionCnt, missionPnt);
+    public ResponseEntity<Ranking> saveScore(@RequestBody MissionDto missionDto){
+        Ranking ranking = missionScoreService.saveScore(missionDto);
         return new ResponseEntity<>(ranking, HttpStatus.CREATED);
     }
 
