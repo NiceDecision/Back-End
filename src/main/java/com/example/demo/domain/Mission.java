@@ -12,9 +12,11 @@ public class Mission {
 
     @Getter
     private Long userId;
+    @Column(nullable = false, name = "mission_cnt")
     @Getter
     private int missionCnt;
     @Getter
+    @Column(nullable = false, name = "mission_pnt")
     private int missionPnt;
 
     // Getter, Setter, 생성자 추가

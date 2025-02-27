@@ -16,19 +16,19 @@ public class Userinfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // UserInfo의 고유 ID
 
-    @Column(name = "birthYear")
+    @Column(name = "birth_year")
     private int birthYear;
 
-    @Column(name = "birthMonth")
+    @Column(name = "birth_month")
     private int birthMonth;
 
-    @Column(name = "birthDate")
+    @Column(name = "birth_date")
     private int birthDate;
 
-    @Column(name = "birthTime")
+    @Column(name = "birth_time")
     private int birthTime;
 
-    @Column(name = "isLunar")
+    @Column(name = "is_lunar")
     private boolean isLunar;
 
     @Column(length = 10)
