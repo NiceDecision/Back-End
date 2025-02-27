@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Ranking;
+import com.example.demo.dto.GetTop5GameScoresResponse;
 import com.example.demo.dto.MissionDto;
 import com.example.demo.service.MissionScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,7 @@ public class MissionScoreController {
 
     // 랭킹 조회 API
     @GetMapping("/rank")
-    public ResponseEntity<List<Ranking>> getTop5GameScores() {
-        List<Ranking> ranking = missionScoreService.getTop5GameScores();
-        return ResponseEntity.ok(ranking);
+    public ResponseEntity<List<GetTop5GameScoresResponse>> getTop5GameScores() {
+        return ResponseEntity.ok(missionScoreService.getTop5GameScores());
     }
 }
