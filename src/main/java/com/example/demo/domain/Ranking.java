@@ -16,9 +16,11 @@ public class Ranking {
 
     private Long userId;
     private int totalPnt;
+
+    // name을 자동으로 User의 name과 연동
+    @Transient // DB에 저장되지 않고 조회 시 사용
     private String name;
 
-    // Getter, Setter, 생성자 추가
     public Ranking() {}
 
     public Ranking(Long userId, int totalPnt, String name) {
