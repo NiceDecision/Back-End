@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class QuestionRequestDto {
-
     private String question;
 
-    @JsonProperty("gpt_mbti")
-    private String gpt_mbti;
+    @JsonProperty("MBTI")
+    private String gptMbti;
 }

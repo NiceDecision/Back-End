@@ -3,10 +3,11 @@ package com.example.demo.service;
 import com.example.demo.domain.User;
 import com.example.demo.domain.Userinfo;
 import com.example.demo.dto.AIRequestDto;
-import com.example.demo.dto.QuestionRequestDto;
+import com.example.demo.dto.GptMbtiDto;
 import com.example.demo.dto.UserInfoDto;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserInfoRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,8 @@ public class AIService {
         this.restTemplate = new RestTemplate();
     }
 
-    // AI 서버로 데이터를 전송
     @Transactional
-    public String sendQuestionToAI(Long userId, QuestionRequestDto questionRequestDto) {
+    public String sendQuestionToAI(Long userId, String question, String gptMbti) {
         Optional<User> optionalUser = userRepository.findById(userId);
         Optional<Userinfo> optionalUserInfo = userInfoRepository.findByUserId(userId);
 
@@ -47,7 +47,6 @@ public class AIService {
                 userinfo.getBirthMonth(),
                 userinfo.getBirthDate());
 
-        // User 정보를 UserInfoDto에 담음
         UserInfoDto userInfo = new UserInfoDto(
                 user.getName(),
                 birthDate,
@@ -55,14 +54,13 @@ public class AIService {
                 userinfo.isLunar(),
                 userinfo.getGender()
         );
-
-        // AI 서버에 보낼 데이터를 AIRequestDto에 담음
+        System.out.println(gptMbti);
         AIRequestDto aiRequest = new AIRequestDto(
-                questionRequestDto.getQuestion(),
-                questionRequestDto.getGpt_mbti(),
+                question,
+                new GptMbtiDto(gptMbti),
                 userInfo
         );
-
+        System.out.println(aiRequest.getGptMbti());
         String aiUrl = "http://34.64.192.124:8000/ai/fortune";
 
         try {
@@ -70,8 +68,9 @@ public class AIService {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<AIRequestDto> request = new HttpEntity<>(aiRequest, headers);
+            // ✅ 전송할 JSON 데이터를 출력하여 확인
+            System.out.println("Request to AI Server: " + new ObjectMapper().writeValueAsString(aiRequest));
 
-            // AI 서버에 POST 요청
             ResponseEntity<String> response = restTemplate.postForEntity(aiUrl, request, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {

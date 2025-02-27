@@ -17,16 +17,13 @@ public class QuestionController {
         this.aiService = aiService;
     }
 
-    // 질문과 MBTI를 동시에 받는 엔드포인트
     @PostMapping
     public ResponseEntity<String> askQuestion(@RequestBody QuestionRequestDto questionRequestDto,
                                               @CookieValue(value = "userId", required = false) Long userId) {
         if (userId == null) {
             return ResponseEntity.status(401).body("User ID not found in cookie.");
         }
-
-        // AI 서버로 질문과 사용자 정보를 함께 전송
-        String response = aiService.sendQuestionToAI(userId, questionRequestDto);
+        String response = aiService.sendQuestionToAI(userId, questionRequestDto.getQuestion(), questionRequestDto.getGptMbti());
         return ResponseEntity.ok(response);
     }
 }
