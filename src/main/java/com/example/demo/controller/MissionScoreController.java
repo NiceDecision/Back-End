@@ -21,7 +21,7 @@ public class MissionScoreController {
     }
 
     // 점수 저장 API
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Ranking> saveScore(@RequestParam Long userId,
                                              @RequestParam String name,
                                              @RequestParam int missionCnt,
