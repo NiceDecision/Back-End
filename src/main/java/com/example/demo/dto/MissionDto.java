@@ -10,9 +10,6 @@ public class MissionDto {
     @JsonProperty("userId")
     private Long userId;
 
-    @JsonProperty("name")
-    private String name;
-
     @JsonProperty("missionCnt")
     private int missionCnt;
 

@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Ranking;
-import com.example.demo.domain.User;
 import com.example.demo.dto.MissionDto;
 import com.example.demo.service.MissionScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
