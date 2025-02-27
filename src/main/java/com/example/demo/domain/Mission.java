@@ -13,10 +13,6 @@ public class Mission {
     @Getter
     private Long userId;
 
-    @Column(nullable = false, name = "name")
-    @Getter
-    private String name;
-
     @Column(nullable = false, name = "mission_cnt")
     @Getter
     private int missionCnt;
@@ -28,9 +24,8 @@ public class Mission {
     // Getter, Setter, 생성자 추가
     public Mission() {}
 
-    public Mission(Long userId, String name, int missionCnt, int missionPnt) {
+    public Mission(Long userId, int missionCnt, int missionPnt) {
         this.userId = userId;
-        this.name = name;
         this.missionCnt = missionCnt;
         this.missionPnt = missionPnt;
     }
