@@ -3,15 +3,16 @@ package com.example.demo.service;
 import com.example.demo.domain.Mission;
 import com.example.demo.domain.Ranking;
 import com.example.demo.domain.User;
-import com.example.demo.dto.MissionDto;
 import com.example.demo.repository.MissionRepository;
 import com.example.demo.repository.RankingRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MissionScoreService {
@@ -27,32 +28,41 @@ public class MissionScoreService {
         this.userRepository = userRepository;
     }
 
-    // Mission 데이터를 활용해 Ranking 저장
-    public Ranking saveScore(MissionDto missionDto) {
-        Long userId = missionDto.getUserId();
-        int missionCnt = missionDto.getMissionCnt();
-        int missionPnt = missionDto.getMissionPnt();
+    // Mission 데이터를 활용해 Ranking 저장 (로그인 사용자 정보 자동 반영)
+    public Ranking saveScore(int missionCnt, int missionPnt) {
+        // 현재 인증된 사용자 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // 사용자 이름 가져오기
 
-        // Mission 테이블에 데이터를 저장
-        Mission mission = new Mission(userId, missionCnt, missionPnt);
-        missionRepository.save(mission);
+        // UserDetails 사용 시
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String name = userDetails.getUsername(); // 사용자의 이름 또는 ID
+            Long userId = getUserIdByName(name); // 사용자 ID를 데이터베이스에서 조회
 
-        // User의 name을 가져오기
-        Optional<User> optionalUser = userRepository.findById(userId);
-        String userName = optionalUser.map(User::getName).orElse("Unknown");
+            // Mission 테이블에 데이터를 저장
+            Mission mission = new Mission(userId, missionCnt, missionPnt);
+            missionRepository.save(mission);
 
-        // totalPnt 계산 후 Ranking 테이블에 저장
-        int totalPnt = missionCnt * missionPnt;
-        Ranking ranking = new Ranking();
-        ranking.setUserId(userId);
-        ranking.setTotalPnt(totalPnt);
-        ranking.setName(userName); // User의 name 설정
+            // totalPnt 계산 후 Ranking 테이블에 저장
+            int totalPnt = missionCnt * missionPnt;
+            Ranking ranking = new Ranking(userId, totalPnt, name);
+            return rankingRepository.save(ranking);
 
-        return rankingRepository.save(ranking);
+        }
+
+        throw new IllegalArgumentException("로그인된 사용자 정보가 없습니다.");
+    }
+
+    // 사용자 이름으로 ID를 조회하는 메서드
+    private Long getUserIdByName(String name) {
+        return userRepository.findByName(name)
+                .map(User::getId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
     }
 
     // 상위 5개 랭킹 조회
-    public List<Ranking> getTop5GameScores() {
+    public List<Ranking> getTop5MissionScores() {
         return rankingRepository.findTop5ByOrderByTotalPntDesc();
     }
 }

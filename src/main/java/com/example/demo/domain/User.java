@@ -20,6 +20,11 @@ public class User {
     @Column(nullable = false, length = 255) // name 컬럼 설정
     private String name;
 
+    // Getter 메서드 추가
+    public Long getId() {
+        return userId;
+    }
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Userinfo userInfo;
 }
