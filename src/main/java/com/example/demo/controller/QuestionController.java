@@ -26,4 +26,5 @@ public class QuestionController {
         String response = aiService.sendQuestionToAI(userId, questionRequestDto.getQuestion(), questionRequestDto.getGptMbti());
         return ResponseEntity.ok(response);
     }
+
 }
