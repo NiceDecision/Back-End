@@ -43,10 +43,8 @@ public class MissionScoreService {
 
         // totalPnt 계산 후 Ranking 테이블에 저장
         int totalPnt = missionCnt * missionPnt;
-        Ranking ranking = new Ranking();
-        ranking.setUserId(userId);
+        Ranking ranking = rankingRepository.findByUserId(userId);
         ranking.setTotalPnt(totalPnt);
-
         return rankingRepository.save(ranking);
     }
 

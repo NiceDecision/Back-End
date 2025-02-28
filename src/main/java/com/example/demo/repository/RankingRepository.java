@@ -10,4 +10,6 @@ import java.util.List;
 public interface RankingRepository extends JpaRepository<Ranking, Long> {
     // totalPnt 기준으로 내림차순 정렬 후 상위 5개 데이터 반환
     List<Ranking> findTop5ByOrderByTotalPntDesc();
+
+    Ranking findByUserId(Long userId);
 }
